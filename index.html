@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>PK Shtore</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css?family=Orbitron:700,900|Montserrat:400,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --pink1: #ffe4ec;
+      --pink2: #ffbcd7;
+      --pink3: #ff87bc;
+      --pink4: #ff5ea7;
+      --pink5: #f24692;
+      --pink6: #c92d70;
+      --white: #fff;
+      --gray: #f7f7fa;
+      --shadow: 0 4px 24px 0 rgba(252, 64, 153, 0.06);
+    }
+    body {
+      font-family: 'Montserrat', Arial, sans-serif;
+      background: linear-gradient(120deg, var(--pink1), var(--pink2) 90%);
+      margin: 0;
+      color: #3a224a;
+      min-height: 100vh;
+      scroll-behavior: smooth;
+    }
+    header {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(255, 228, 236, 0.97);
+      box-shadow: var(--shadow);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.6rem 2rem;
+    }
+    .logo {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      font-size: 1.8rem;
+      color: var(--pink5);
+      letter-spacing: 1px;
+      display: flex; align-items: center;
+    }
+    nav {
+      display: flex; gap: 2rem;
+    }
+    nav a {
+      color: var(--pink6);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 0.3em 0.7em;
+      border-radius: 0.6em;
+      transition: background .18s;
+    }
+    nav a.active, nav a:hover {
+      background: var(--pink3);
+      color: var(--pink6);
+    }
+    main { padding: 3rem 1rem 1.5rem 1rem; max-width: 1100px; margin: 0 auto; }
+    section { margin-bottom: 3rem; }
+    h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: var(--pink6); }
+    h1 { font-size: 2.7rem; margin-top: 1.6rem; }
+    .stats {
+      display: flex; justify-content: center; gap: 2.5rem; flex-wrap: wrap;
+      margin: 2.5rem 0 2rem 0;
+    }
+    .stat {
+      text-align: center;
+      background: var(--white);
+      border-radius: 1.2em;
+      box-shadow: var(--shadow);
+      padding: 1.2rem 2.2rem;
+      min-width: 120px;
+    }
+    .stat .num { font-size: 2.3rem; font-weight: 900; color: var(--pink5);}
+    .stat .label { font-size: 0.95rem; color: #9e537d; }
+    .btn, button, input[type=button] {
+      background: linear-gradient(90deg, var(--pink4), var(--pink5));
+      color: #fff;
+      border: none;
+      border-radius: 1em;
+      font-weight: bold;
+      font-size: 1.12rem;
+      padding: 0.68em 2em;
+      cursor: pointer;
+      transition: background .17s, box-shadow .17s;
+      box-shadow: 0 2px 10px 0 #ffc8df3a;
+    }
+    .btn:hover, button:hover, input[type=button]:hover {
+      background: linear-gradient(90deg, var(--pink5), var(--pink4));
+    }
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
+      gap: 2rem;
+      margin-top: 1.5rem;
+    }
+    .product-card {
+      background: var(--white);
+      border-radius: 1.2em;
+      box-shadow: var(--shadow);
+      padding: 1.2rem;
+      text-align: center;
+      position: relative;
+      cursor: pointer;
+      transition: transform .13s;
+    }
+    .product-card:hover {
+      transform: scale(1.025);
+      box-shadow: 0 6px 24px 0 #ff5ea731;
+    }
+    .product-img {
+      width: 90%;
+      max-width: 210px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 1em;
+      margin-bottom: 1em;
+      border: 3px solid var(--pink2);
+    }
+    .product-title { font-weight: 800; color: var(--pink6); font-size: 1.2rem; }
+    .product-price { color: var(--pink5); font-size: 1.2rem; font-weight: bold;}
+    .old-price { text-decoration: line-through; color: #d4a3bc; font-size: 0.96em; margin-left: 6px; }
+    .product-stock { color: #a971a1; font-size: 0.9em; }
+    .product-card .btn {
+      font-size: 1em; margin-top: 1.1em;
+      width: 90%;
+      padding: 0.7em 0;
+    }
+    .product-desc {
+      color: #6e3171;
+      font-size: 0.99em;
+      margin: 0.7em 0 0 0;
+      min-height: 2.4em;
+    }
+    /* Modal */
+    .modal-bg {
+      position: fixed; top:0; left:0; width:100vw; height:100vh;
+      background: rgba(230, 49, 112, 0.21);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1111;
+    }
+    .modal {
+      background: var(--white);
+      border-radius: 1.4em;
+      max-width: 400px;
+      padding: 2.2rem 1.7rem;
+      box-shadow: 0 8px 44px 2px #f2469266;
+      text-align: center;
+      position: relative;
+      animation: pop 0.18s cubic-bezier(.4,2,.7,1) 1;
+    }
+    @keyframes pop { 0% {transform: scale(.92);} 100% {transform: scale(1);} }
+    .modal-close {
+      position: absolute; right: 1.1em; top: 1.1em;
+      font-size: 1.7rem; color: var(--pink5); background: none; border: none; cursor: pointer;
+      line-height: 1;
+    }
+    .modal-img {
+      width: 95%; max-width: 210px; margin-bottom: 1em;
+      border-radius: 1em; border: 2px solid var(--pink2);
+    }
+    .modal-title { font-size: 1.4rem; font-weight: bold; color: var(--pink6); margin-bottom: 0.2em;}
+    .modal-desc { color: #803667; font-size: 1.01rem; margin-bottom: 0.4em;}
+    .modal .product-price { font-size: 1.22rem;}
+    .modal .btn {
+      font-size: 1.09em; margin-top: 1.7em;
+      width: 90%;
+      padding: 0.74em 0;
+    }
+    /* PayPal warning popup */
+    .paypal-popup {
+      background: #fff4fa;
+      border: 2px solid var(--pink4);
+      border-radius: 1.5em;
+      padding: 2rem 1.3rem;
+      color: var(--pink6);
+      font-size: 1.1em;
+      box-shadow: 0 5px 38px 2px #ff5ea733;
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      z-index: 2200;
+      max-width: 98vw;
+      text-align: center;
+      animation: pop .14s cubic-bezier(.5,1.4,.7,1.2) 1;
+    }
+    .paypal-popup strong { color: var(--pink5);}
+    .paypal-popup button {
+      margin-top: 1.8em;
+      width: 80%;
+      font-size: 1em;
+    }
+    /* Reviews */
+    .reviews-list {
+      margin: 2.5em 0 0 0;
+      display: flex; flex-direction: column; gap: 1.5em;
+      max-width: 650px; margin-left: auto; margin-right: auto;
+    }
+    .review-card {
+      background: var(--white);
+      border-radius: 1em;
+      box-shadow: var(--shadow);
+      padding: 1.2em 1.4em;
+      display: flex; flex-direction: column;
+      gap: 0.5em;
+      border-left: 6px solid var(--pink3);
+    }
+    .reviewer {
+      font-weight: bold; color: var(--pink5);
+      font-size: 1.09em;
+    }
+    .review-rating {
+      color: #ffd6f1;
+      font-size: 1.3em;
+      margin-right: 0.4em;
+      letter-spacing: 0.07em;
+      text-shadow: 0 2px 3px #ffa8ce55;
+    }
+    .review-text {
+      color: #6e3171;
+      font-size: 1em;
+    }
+    /* Responsive */
+    @media (max-width: 650px) {
+      header {flex-direction:column;gap:0.7em;padding:0.8rem;}
+      .stats { gap: 1.2rem;}
+      .products-grid { gap: 1.2rem;}
+      .modal { padding: 1.3rem 0.7rem;}
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="logo">PK Shtore</div>
+    <nav>
+      <a href="#home" class="active" onclick="switchSection('home')">Home</a>
+      <a href="#products" onclick="switchSection('products')">Products</a>
+      <a href="#reviews" onclick="switchSection('reviews')">Reviews</a>
+    </nav>
+  </header>
+  <!-- Main -->
+  <main>
+    <!-- HOME -->
+    <section id="home" style="margin-top:2em;">
+      <h1>Welcome to <span style="color: var(--pink5)">PK Shtore</span>!</h1>
+      <p style="max-width:560px;margin:auto;font-size:1.18rem;line-height:1.65;color:#7d3169;margin-top:1.2em;">
+        We specialize in making <span style="color: var(--pink5);font-weight:600;">custom emotes</span> for reanimation scripts.<br>
+        Some of the packs we offer: <strong>Thrusts</strong>, <strong>Freestyle Dances</strong>, <strong>Twerks</strong>, <strong>Romantic Moves</strong>, <strong>Meme Dances</strong>, and more.<br>
+        <b>Mix & Match available!</b> Create a ticket for custom combos or surprise moves.
+      </p>
+      <div class="stats">
+        <div class="stat"><div class="num">3</div><div class="label">PRODUCTS SOLD</div></div>
+        <div class="stat"><div class="num">3</div><div class="label">TOTAL CUSTOMERS</div></div>
+        <div class="stat"><div class="num">1</div><div class="label">REVIEWS RECEIVED</div></div>
+        <div class="stat"><div class="num">5.00</div><div class="label">AVERAGE RATING</div></div>
+      </div>
+      <div style="text-align:center; margin-top:1.9em;">
+        <button class="btn" onclick="switchSection('products');window.scrollTo(0,0);">View Products</button>
+      </div>
+    </section>
+    <!-- PRODUCTS -->
+    <section id="products" style="display:none;">
+      <h2 style="text-align:center;font-size:2.2rem;">Our Products</h2>
+      <div class="products-grid" id="products-grid">
+        <!-- JS FILLS HERE -->
+      </div>
+    </section>
+    <!-- REVIEWS -->
+    <section id="reviews" style="display:none;">
+      <h2 style="text-align:center;font-size:2.2rem;">Customer Reviews</h2>
+      <div class="reviews-list">
+        <div class="review-card">
+          <span class="reviewer">PKUser</span>
+          <span class="review-rating">★★★★★</span>
+          <div class="review-text">Absolutely loved the custom emotes, the process was smooth and fast. Will buy again!</div>
+          <div style="font-size:0.93em;color:#d8b1c5;">2025-07-01</div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <!-- Modal for product details -->
+  <div id="product-modal-bg" class="modal-bg" style="display:none;">
+    <div class="modal" id="product-modal">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <img id="modal-img" class="modal-img" src="" alt="Product image">
+      <div class="modal-title" id="modal-title"></div>
+      <div class="modal-desc" id="modal-desc"></div>
+      <div>
+        <span class="product-price" id="modal-price"></span>
+        <span class="old-price" id="modal-old-price"></span>
+      </div>
+      <div class="product-stock" id="modal-stock"></div>
+      <button class="btn" style="margin-top:2em;" onclick="showPaypalPopup()">Pay with PayPal</button>
+    </div>
+  </div>
+  <!-- PayPal warning popup -->
+  <div id="paypal-popup" class="paypal-popup" style="display:none;">
+    <div style="font-size:1.35em;font-weight:bold;margin-bottom:0.8em;">PayPal Payment Notice</div>
+    <div>
+      Please send payment via <strong>Friends &amp; Family</strong> only.<br>
+      <span style="color: var(--pink4);font-weight:bold;">Do not add any notes!</span>
+    </div>
+    <button onclick="hidePaypalPopup()">Okay, got it!</button>
+  </div>
+  <script>
+    // Products data (replace img src as needed)
+    const products = [
+      {
+        name: "Thrust/Freestyle Dances",
+        price: 10,
+        oldPrice: 10,
+        img: "https://placehold.co/300x200/ffbcd7/fff?text=Thrust+Dance", // Replace with your path or filename
+        stock: "∞",
+        desc: "Energetic freestyle and thrust dance moves for your scripts!"
+      },
+      {
+        name: "Twerks",
+        price: 15,
+        oldPrice: 15,
+        img: "https://placehold.co/300x200/ff87bc/fff?text=Twerks", // Replace with your path or filename
+        stock: "∞",
+        desc: "A pack with the best twerk moves and variations."
+      },
+      {
+        name: "Romantic Moves",
+        price: 8,
+        oldPrice: 8,
+        img: "https://placehold.co/300x200/ffe4ec/ba5e86?text=Romantic", // Replace with your path or filename
+        stock: "∞",
+        desc: "Slow, smooth, and sentimental romantic dance emotes."
+      },
+      {
+        name: "Meme Dances",
+        price: 14,
+        oldPrice: 14,
+        img: "https://placehold.co/300x200/ff5ea7/fff?text=Meme+Dances", // Replace with your path or filename
+        stock: "∞",
+        desc: "TikTok trends, viral meme moves, and cringe classics."
+      },
+      {
+        name: "All in one bundle!",
+        price: 30,
+        oldPrice: 30,
+        img: "https://placehold.co/300x200/f24692/fff?text=All+in+One", // Replace with your path or filename
+        stock: "∞",
+        desc: "Get everything in one big bundle at a discount."
+      }
+    ];
+
+    // Fill products grid
+    function renderProducts() {
+      const grid = document.getElementById("products-grid");
+      grid.innerHTML = "";
+      products.forEach((prod, i) => {
+        const div = document.createElement("div");
+        div.className = "product-card";
+        div.innerHTML = `
+          <img src="${prod.img}" class="product-img" alt="Product image">
+          <div class="product-title">${prod.name}</div>
+          <div class="product-desc">${prod.desc}</div>
+          <div style="margin-top:0.5em;">
+            <span class="product-price">$${prod.price.toFixed(2)}</span>
+            <span class="old-price" style="${prod.price === prod.oldPrice ? 'display:none':''}">$${prod.oldPrice.toFixed(2)}</span>
+          </div>
+          <div class="product-stock">In Stock: ${prod.stock}</div>
+          <button class="btn" onclick="openModal(${i});event.stopPropagation();">View Details</button>
+        `;
+        div.onclick = () => openModal(i);
+        grid.appendChild(div);
+      });
+    }
+    renderProducts();
+
+    // Modal logic
+    function openModal(idx) {
+      const prod = products[idx];
+      document.getElementById("modal-img").src = prod.img;
+      document.getElementById("modal-title").innerText = prod.name;
+      document.getElementById("modal-desc").innerText = prod.desc;
+      document.getElementById("modal-price").innerText = `$${prod.price.toFixed(2)}`;
+      document.getElementById("modal-old-price").innerText = prod.price === prod.oldPrice ? "" : `$${prod.oldPrice.toFixed(2)}`;
+      document.getElementById("modal-stock").innerText = `In Stock: ${prod.stock}`;
+      document.getElementById("product-modal-bg").style.display = "flex";
+      document.body.style.overflow = "hidden";
+    }
+    function closeModal() {
+      document.getElementById("product-modal-bg").style.display = "none";
+      document.body.style.overflow = "";
+    }
+    // PayPal popup
+    function showPaypalPopup() {
+      document.getElementById("paypal-popup").style.display = "block";
+    }
+    function hidePaypalPopup() {
+      document.getElementById("paypal-popup").style.display = "none";
+    }
+    // Section navigation
+    function switchSection(name) {
+      ["home", "products", "reviews"].forEach(id => {
+        document.getElementById(id).style.display = (id === name) ? "block" : "none";
+        // update nav highlight
+        document.querySelectorAll('nav a').forEach(a => {
+          a.classList.toggle("active", a.getAttribute('href') === "#" + name);
+        });
+      });
+      if(name === "products") window.scrollTo(0,0);
+    }
+    // Hash navigation on page load
+    window.onload = function() {
+      if(location.hash && ["#home","#products","#reviews"].includes(location.hash)){
+        switchSection(location.hash.substring(1));
+      }
+    }
+  </script>
+</body>
+</html>
